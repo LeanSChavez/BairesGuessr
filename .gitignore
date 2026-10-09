@@ -1,0 +1,31 @@
+# IDEs / Editores
+.idea/
+.vscode/
+*.swp
+*.DS_Store
+
+# Backend (Spring Boot / Kotlin / Gradle)
+backend/.gradle/
+backend/build/
+backend/out/
+backend/bin/
+backend/.settings/
+backend/.classpath
+backend/.project
+
+# Frontend (React / Node)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/.env.local
+
+# Python / Scripts de limpieza de data
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Datos persistidos locales de Docker
+database/data/
+database/.mongo/
