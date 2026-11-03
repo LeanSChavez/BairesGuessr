@@ -23,28 +23,27 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrorMessage(null);
+  e.preventDefault();
+  setIsLoading(true);
+  setErrorMessage(null);
 
-    try {
-      // 1. Llamada al servicio (mock o backend real)
-      const user = await userService.login({
-        emailOrUsername: emailOrUser,
-        passwordHash: password,
-      });
+  try {
+    const user = await userService.login({
+      emailOrUsername: emailOrUser,  // Coincide con Kotlin
+      passwordHash: password,        // Coincide con Kotlin
+    } as any);
 
-      console.log('Usuario logueado:', user);
-
-      // 2. Redirección al menú principal
-      navigate('/menu'); 
-    } catch (error: any) {
-      console.error('Error en el login:', error);
-      setErrorMessage(error.message || 'Credenciales inválidas');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    console.log('Usuario logueado:', user);
+    navigate('/menu'); 
+  } catch (error: any) {
+    console.error('Error en el login:', error);
+    setErrorMessage(
+      error.response?.data?.message || 'Credenciales inválidas. Verificá los datos.'
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <Center minH="100vh" bg="bg.subtle" px={4}>
@@ -72,7 +71,7 @@ export const Login = () => {
                 <Field.Label fontSize="sm">Usuario o Email</Field.Label>
                 <Input
                   type="text"
-                  placeholder="User Mock = lean"
+                  placeholder="Tu usuario o email"
                   value={emailOrUser}
                   onChange={(e) => setEmailOrUser(e.target.value)}
                 />
@@ -82,7 +81,7 @@ export const Login = () => {
                 <Field.Label fontSize="sm">Contraseña</Field.Label>
                 <Input
                   type="password"
-                  placeholder="Pass Mock = 123"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
