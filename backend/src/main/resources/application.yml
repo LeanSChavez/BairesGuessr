@@ -5,15 +5,16 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/bairesguessr
     username: postgres
-    password: tu_password_aca
+    password: postgrespassword
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
 
-  mongodb:
-    uri: mongodb://localhost:27017/bairesguessr
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/bairesguessr

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bairesguessr_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: bairesguessr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/script.sql:/docker-entrypoint-initdb.d/script.sql
+      - ./database/data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:7.0
+    container_name: bairesguessr_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./database/.mongo:/data/db
