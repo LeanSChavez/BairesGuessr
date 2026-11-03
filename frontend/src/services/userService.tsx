@@ -1,62 +1,32 @@
+// src/services/userService.ts
 import axios from 'axios';
-import type { User } from '../domain/user';
+import type { LoginRequest, RegistroRequest, LoginResponse } from '../domain/auth';
 
-const API_URL = 'http://localhost:8080/api';
-
-export interface LoginCredentials {
-  emailOrUsername: string;
-  passwordHash: string;
-}
-
-export interface RegisterCredentials {
-  username: string;
-  email: string;
-  passwordHash: string;
-}
-
-export const MOCK_USER: User = {
-  id: 1,
-  username: 'lean',
-  email: 'lean@bairesguessr.com',
-};
-
-const MOCK_PASSWORD = '123';
+const API_URL = 'http://localhost:8080/api/auth';
 
 export const userService = {
-  login: async (credentials: LoginCredentials): Promise<User> => {
-    // LLAMADA REAL CON AXIOS:
-    // const response = await axios.post<User>(`${API_URL}/auth/login`, credentials);
-    // return response.data;
-
-    // MOCK TEMPORAL CON VALIDACIÓN:
-    console.log('Haciendo login mock con:', credentials);
-
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulamos la verificación de credenciales
-        if (credentials.passwordHash === MOCK_PASSWORD) {
-          resolve(MOCK_USER);
-        } else {
-          reject(new Error('Credenciales inválidas'));
-        }
-      }, 500);
-    });
+  login: async (credentials: LoginRequest): Promise<LoginResponse> => {
+    const response = await axios.post<LoginResponse>(`${API_URL}/login`, credentials);
+    if (response.data) {
+      localStorage.setItem('user', JSON.stringify(response.data));
+    }
+    return response.data;
   },
 
-  register: async (credentials: RegisterCredentials): Promise<User> => {
-    // LLAMADA REAL CON AXIOS:
-    // const response = await axios.post<User>(`${API_URL}/auth/register`, credentials);
-    // return response.data;
-
-    console.log('Haciendo registro mock con:', credentials);
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(MOCK_USER), 500);
-    });
+  register: async (credentials: RegistroRequest): Promise<LoginResponse> => {
+    const response = await axios.post<LoginResponse>(`${API_URL}/register`, credentials);
+    if (response.data) {
+      localStorage.setItem('user', JSON.stringify(response.data));
+    }
+    return response.data;
   },
 
-  getCurrentUser: async (): Promise<User> => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(MOCK_USER), 300);
-    });
+  logout: () => {
+    localStorage.removeItem('user');
+  },
+
+  getCurrentUser: (): LoginResponse | null => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   },
 };

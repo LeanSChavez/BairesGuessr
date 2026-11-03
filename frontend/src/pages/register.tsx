@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
+  Alert,
   Button,
   Card,
   Center,
@@ -10,16 +12,39 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { userService } from '../services/userService';
 
 export const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Próximamente: POST /api/auth/register a Spring Boot -> PostgreSQL
-    console.log({ username, email, password });
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    try {
+      await userService.register({
+        username,
+        email,
+        password,
+      });
+
+      // Al registrarse con éxito, podemos redirigir directo al menú o al login
+      navigate('/menu');
+    } catch (error: any) {
+      console.error('Error en el registro:', error);
+      setErrorMessage(
+        error.response?.data?.message || 'No se pudo crear la cuenta. Intente con otro usuario/email.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -35,9 +60,16 @@ export const Register = () => {
         </Card.Header>
 
         <Card.Body>
+          {errorMessage && (
+            <Alert.Root status="error" mb={4} borderRadius="md">
+              <Alert.Indicator />
+              <Alert.Title fontSize="sm">{errorMessage}</Alert.Title>
+            </Alert.Root>
+          )}
+
           <form onSubmit={handleSubmit}>
             <Stack gap="4">
-              <Field.Root required>
+              <Field.Root required invalid={!!errorMessage}>
                 <Field.Label fontSize="sm">Nombre de Usuario</Field.Label>
                 <Input
                   type="text"
@@ -47,7 +79,7 @@ export const Register = () => {
                 />
               </Field.Root>
 
-              <Field.Root required>
+              <Field.Root required invalid={!!errorMessage}>
                 <Field.Label fontSize="sm">Email</Field.Label>
                 <Input
                   type="email"
@@ -57,7 +89,7 @@ export const Register = () => {
                 />
               </Field.Root>
 
-              <Field.Root required>
+              <Field.Root required invalid={!!errorMessage}>
                 <Field.Label fontSize="sm">Contraseña</Field.Label>
                 <Input
                   type="password"
@@ -73,6 +105,7 @@ export const Register = () => {
                 size="lg"
                 mt={2}
                 w="full"
+                loading={isLoading}
               >
                 Registrarse
               </Button>
