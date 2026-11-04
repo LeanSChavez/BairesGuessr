@@ -29,9 +29,22 @@ class JuegoController(
     }
 
     @PostMapping("/{idPartida}/rondas/nueva")
-    fun generarNuevaRonda(@PathVariable idPartida: Int): ResponseEntity<RondaNuevaResponse> {
-        val nuevaRonda = juegoService.generarNuevaRonda(idPartida)
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaRonda)
+    fun generarNuevaRonda(@PathVariable idPartida: Int): ResponseEntity<Any> {
+        return try {
+            val response = juegoService.generarNuevaRonda(idPartida)
+            ResponseEntity.status(HttpStatus.CREATED).body(response)
+        } catch (ex: Throwable) {
+            println("==================================================")
+            println("====== CAUSA EXACTA DEL ERROR (STACKTRACE) =======")
+            ex.printStackTrace()
+            println("==================================================")
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                mapOf(
+                    "error" to ex.javaClass.name,
+                    "mensaje" to (ex.message ?: "Sin mensaje detallado")
+                )
+            )
+        }
     }
 
     @PostMapping("/{idPartida}/rondas/{idRonda}/adivinar")

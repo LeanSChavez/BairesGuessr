@@ -67,28 +67,30 @@ class JuegoService(
 
         val rondasExistentes = rondaRepository.findByPartidaIdOrderByNumeroRondaAsc(idPartida)
         if (rondasExistentes.size >= MAX_RONDAS_POR_PARTIDA) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Ya se alcanzó el límite de $MAX_RONDAS_POR_PARTIDA rondas")
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Límite de rondas alcanzado")
         }
 
-        // Buscamos un lugar en Mongo que no haya salido todavía en esta partida
-        val idsYaUsados = rondasExistentes.map { it.idLugar }
-        val espacio = if (idsYaUsados.isEmpty()) {
-            espacioCulturalRepository.obtenerAleatorio()
-        } else {
-            espacioCulturalRepository.obtenerAleatorioExcluyendo(idsYaUsados)
-                ?: espacioCulturalRepository.obtenerAleatorio() // Fallback por si hay pocos documentos en Mongo
-        } ?: throw ResponseStatusException(
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            "No hay espacios culturales cargados en la colección de MongoDB"
+        val idsYaUsados = rondasExistentes.map { it.idLugar }.toSet()
+
+        // Obtenemos todos los documentos y seleccionamos uno al azar que no haya salido
+        val todosLosLugares = espacioCulturalRepository.findAll()
+        if (todosLosLugares.isEmpty()) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "No hay espacios en MongoDB")
+        }
+
+        val disponibles = todosLosLugares.filter { it.id !in idsYaUsados }
+        val seleccionado = (if (disponibles.isNotEmpty()) disponibles else todosLosLugares).random()
+
+        val idMongo = seleccionado.id ?: throw ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR, "El documento seleccionado no tiene _id"
         )
 
         val numeroNuevaRonda = rondasExistentes.size + 1
 
-        // Guardamos la ronda inicializada en 0.0 (cumpliendo los CHECK NOT NULL de tu SQL)
         val nuevaRonda = Ronda(
             partida = partida,
             numeroRonda = numeroNuevaRonda,
-            idLugar = espacio.id ?: throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Documento Mongo sin _id")
+            idLugar = idMongo
         )
 
         val guardada = rondaRepository.save(nuevaRonda)
@@ -98,8 +100,8 @@ class JuegoService(
             idPartida = partida.id,
             numeroRonda = guardada.numeroRonda,
             idLugar = guardada.idLugar,
-            mapillaryId = espacio.mapillaryId,
-            pistaFuncionPrincipal = espacio.funcionPrincipal
+            mapillaryId = seleccionado.mapillaryId ?: "12345abcde_mock",
+            pistaFuncionPrincipal = seleccionado.funcionPrincipal ?: "CULTURA"
         )
     }
 
@@ -123,8 +125,12 @@ class JuegoService(
             ResponseStatusException(HttpStatus.NOT_FOUND, "El espacio cultural (${ronda.idLugar}) no existe en MongoDB")
         }
 
-        val latReal = espacio.ubicacion.latitud
-        val lonReal = espacio.ubicacion.longitud
+        val ubicacion = espacio.ubicacion ?: throw ResponseStatusException(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "El espacio cultural (${ronda.idLugar}) no posee coordenadas en MongoDB"
+        )
+        val latReal = ubicacion.latitud
+        val lonReal = ubicacion.longitud
 
         // Calculamos distancia y puntaje con Haversine
         val distanciaMetrosBd = GeoCalculator.calcularDistanciaMetros(
@@ -162,8 +168,8 @@ class JuegoService(
             longitudReal = lonReal,
             latitudAdivinada = request.latitudAdivinada,
             longitudAdivinada = request.longitudAdivinada,
-            nombreEstablecimiento = espacio.establecimiento,
-            barrio = espacio.barrio,
+            nombreEstablecimiento = espacio.establecimiento ?: "Lugar Cultural",
+            barrio = espacio.barrio ?: "CABA",
             partidaFinalizada = finalizada,
             puntajeTotalAcumulado = partida.puntajeTotal
         )
