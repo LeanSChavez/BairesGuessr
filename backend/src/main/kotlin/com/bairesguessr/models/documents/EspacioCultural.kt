@@ -8,29 +8,20 @@ import org.springframework.data.mongodb.core.mapping.Field
 data class EspacioCultural(
     @Id
     val id: String? = null,
-
-    val fid: Int = 0,
-
-    val establecimiento: String = "",
-
+    val fid: Int? = null,
+    val establecimiento: String? = null,
     @Field("funcion_principal")
-    val funcionPrincipal: String = "",
-
-    val barrio: String = "",
-
-    val ubicacion: UbicacionGeoJson,
-
+    val funcionPrincipal: String? = null,
+    val barrio: String? = null,
+    val ubicacion: UbicacionGeoJson? = null,
     @Field("mapillary_id")
     val mapillaryId: String? = null
 )
 
 data class UbicacionGeoJson(
     val type: String = "Point",
-    val coordinates: List<Double> = emptyList() // [0] = longitud (-58.3924), [1] = latitud (-34.5960)
+    val coordinates: List<Double> = emptyList()
 ) {
-    val longitud: Double
-        get() = coordinates.getOrElse(0) { 0.0 }
-
-    val latitud: Double
-        get() = coordinates.getOrElse(1) { 0.0 }
+    val longitud: Double get() = coordinates.getOrElse(0) { 0.0 }
+    val latitud: Double get() = coordinates.getOrElse(1) { 0.0 }
 }
