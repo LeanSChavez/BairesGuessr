@@ -48,7 +48,7 @@ export const Login = () => {
   return (
     <Center minH="100vh" bg="bg.subtle" px={4}>
       <Card.Root w="full" maxW="md" shadow="md">
-        <Card.Header textAlign="center">
+      <Card.Header textAlign="center">
           <Heading size="xl" color="teal.600">
             BairesGuessr
           </Heading>
