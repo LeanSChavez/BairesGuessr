@@ -29,4 +29,16 @@ export const userService = {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   },
+
+
+ // getRanking: async (): Promise<RankingUser[]> => {
+ //   const response = await axios.get(`${API_URL}/partidas/ranking`);
+  //  return response.data;
+//} para el maximo puntaje 
+
+//export interface RankingUser {
+ // id: number;
+ // username: string;
+  //maxPuntos: number;
+//} dto para el max puntaje
 };
