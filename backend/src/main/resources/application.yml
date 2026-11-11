@@ -1,5 +1,10 @@
 server:
   port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    include-exception: true
 
 spring:
   datasource:
@@ -18,3 +23,12 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/bairesguessr
+      database: bairesguessr
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.bairesguessr: DEBUG
