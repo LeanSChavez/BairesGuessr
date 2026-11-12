@@ -23,3 +23,5 @@ services:
       - "27017:27017"
     volumes:
       - ./database/.mongo:/data/db
+      - ./database/scripts_nosql/espacios_culturales.json:/docker-entrypoint-initdb.d/espacios_culturales.json:ro
+      - ./database/scripts_nosql/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
