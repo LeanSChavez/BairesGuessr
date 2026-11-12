@@ -12,6 +12,7 @@ export const Routing = () => (
         <Route path="/register" element={<Register />} />
         <Route path="/menu" element={<Menu />}/>
         <Route path="/partida" element={<Partida />}/>
+        <Route path="/partida/:idPartida" element={<Partida />}/>
         <Route path="/profile" element={<Profile />}/>
     </Routes>
 )
