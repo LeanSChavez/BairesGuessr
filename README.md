@@ -5,10 +5,12 @@ BairesGuessr/
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── kotlin/com/bairesguessr/
-│   │   │   │   ├── controller/   # Endpoints REST (Auth, Partidas, etc.)
-│   │   │   │   ├── domain/       # Entidades (Usuario, Partida, etc.)
-│   │   │   │   ├── repository/   # Repositorios y MongoDB
-│   │   │   │   └── service/      # Lógica de negocio
+│   │   │   │   ├── controllers/  # Endpoints REST (Auth, Partidas, etc.)
+│   │   │   │   ├── domain/       # Lógica de dominio (GeoCalculator)
+│   │   │   │   ├── dtos/         # Objetos de transferencia (Requests y Responses)
+│   │   │   │   ├── models/       # Entidades (Usuario, Partida, Ronda, EspacioCultural)
+│   │   │   │   ├── repositories/ # Repositorios JPA y MongoDB
+│   │   │   │   └── services/     # Lógica de negocio
 │   │   │   └── resources/        # Configuración (application.yml)
 │   │   └── test/
 │   └── build.gradle.kts
