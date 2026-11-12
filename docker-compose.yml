@@ -16,12 +16,15 @@ services:
       - ./database/data:/var/lib/postgresql/data
 
   mongo:
-    image: mongo:7.0
-    container_name: bairesguessr_mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./database/.mongo:/data/db
-      - ./database/scripts_nosql/espacios_culturales.json:/docker-entrypoint-initdb.d/espacios_culturales.json:ro
-      - ./database/scripts_nosql/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      image: mongo:7.0
+      container_name: bairesguessr_mongo
+      restart: always
+      ports:
+        - "27017:27017"
+      volumes:
+        - mongo_data:/data/db
+        - ./database/scripts_nosql/espacios_culturales.json:/docker-entrypoint-initdb.d/espacios_culturales.json:ro
+        - ./database/scripts_nosql/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
+volumes:
+  mongo_data:
