@@ -49,6 +49,10 @@ BairesGuessr/
 └── README.md
 
 ```
+<img width="1849" height="1077" alt="image" src="https://github.com/user-attachments/assets/410edc5f-9ce1-446a-89ec-b558241ab433" />
+
+<img width="1848" height="1068" alt="image" src="https://github.com/user-attachments/assets/b0e1ad47-7da5-464e-a23d-556d0ed74904" />
+
 
 ## Instrucciones para ejecutar el proyecto
 
