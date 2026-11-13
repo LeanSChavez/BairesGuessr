@@ -35,6 +35,19 @@ export interface RondaResultadoResponse {
   puntajeTotalAcumulado: number;
 }
 
+export interface RecordHistoricoResponse {
+  posicion?: number;
+  idPartida: number;
+  username: string;
+  puntajeTotal: number;
+}
+
+export interface PartidaHistorialResponse {
+  idPartida: number;
+  fechaInicio: string;
+  puntajeTotal: number;
+  estado: string;
+}
 export const juegoService = {
   iniciarPartida: async (idUsuario: number): Promise<PartidaResponse> => {
     const response = await axios.post<PartidaResponse>(API_URL, {
@@ -69,5 +82,19 @@ export const juegoService = {
         }
         );
         return response.data;
-    }
+    },
+    obtenerRanking: async (): Promise<RecordHistoricoResponse[]> => {
+    const response = await axios.get<RecordHistoricoResponse[]>(
+      'http://localhost:8080/api/leaderboard'
+    );
+    return response.data;
+  },
+
+  obtenerPartidasUsuario: async (idUsuario: number): Promise<PartidaResponse[]> => {
+    const response = await axios.get<PartidaResponse[]>(
+      `${API_URL}/usuario/${idUsuario}`
+    );
+    return response.data;
+  }
+
 }

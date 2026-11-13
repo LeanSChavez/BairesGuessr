@@ -17,4 +17,4 @@ interface PartidaRepository : JpaRepository<Partida, Int> {
         LIMIT 10
     """)
     fun findTop10Finalizadas(): List<Partida>
-}
+    fun findByUsuarioIdOrderByFechaInicioDesc(idUsuario: Int): List<Partida>}
