@@ -19,7 +19,7 @@ backend/.classpath
 backend/.project
 
 # Frontend (React / Node / Vite)
-frontend/node_modules/
+node_modules/
 frontend/dist/
 frontend/dist-ssr/
 frontend/build/
