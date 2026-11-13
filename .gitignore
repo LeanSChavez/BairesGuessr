@@ -1,8 +1,13 @@
-# IDEs / Editores
+# IDEs, Editores y SO
 .idea/
 .vscode/
 *.swp
+*.sw?
 *.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
 # Backend (Spring Boot / Kotlin / Gradle)
 backend/.gradle/
@@ -13,19 +18,31 @@ backend/.settings/
 backend/.classpath
 backend/.project
 
-# Frontend (React / Node)
-frontend/node_modules/
+# Frontend (React / Node / Vite)
+node_modules/
 frontend/dist/
+frontend/dist-ssr/
 frontend/build/
 frontend/.next/
 frontend/.env.local
+*.local
+*.env
 
-# Python / Scripts de limpieza de data
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Python / Scripts
 __pycache__/
 *.pyc
 .venv/
 venv/
 
-# Datos persistidos locales de Docker
+# Base de datos y Docker
 database/data/
 database/.mongo/
