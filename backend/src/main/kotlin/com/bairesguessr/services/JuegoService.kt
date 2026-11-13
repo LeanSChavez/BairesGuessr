@@ -174,7 +174,19 @@ class JuegoService(
             puntajeTotalAcumulado = partida.puntajeTotal
         )
     }
-
+    @Transactional(readOnly = true)
+    fun obtenerPartidasPorUsuario(idUsuario: Int): List<PartidaResponse> {
+        return partidaRepository.findByUsuarioIdOrderByFechaInicioDesc(idUsuario).map { partida ->
+            PartidaResponse(
+                idPartida = partida.id,
+                idUsuario = partida.usuario.id,
+                estado = partida.estado,
+                puntajeTotal = partida.puntajeTotal,
+                fechaInicio = partida.fechaInicio,
+                rondasTotalesPermitidas = MAX_RONDAS_POR_PARTIDA
+            )
+        }
+    }
     @Transactional(readOnly = true)
     fun obtenerEstadoPartida(idPartida: Int): PartidaResponse {
         val partida = partidaRepository.findById(idPartida).orElseThrow {

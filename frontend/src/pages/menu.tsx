@@ -1,7 +1,7 @@
 import { Box, Button, Center, VStack, Heading, Text, HStack } from "@chakra-ui/react";
 import { NavBar } from "../components/ui/navbar";
 import { userService } from '../services/userService';
-import { juegoService } from '../services/juegoService';
+import { juegoService, type RecordHistoricoResponse } from '../services/juegoService';
 import { useOnInit } from "../services/hooks/commons";
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ export const Menu = () => {
 
   const [bgIndex, setBgIndex] = useState(0);
   const [isStarting, setIsStarting] = useState(false);
+  const [records, setRecords] = useState<RecordHistoricoResponse[]>([]);
 
   const IMAGENES_FONDO = [
     '/images/1.jpg',
@@ -22,13 +23,18 @@ export const Menu = () => {
     '/images/6.jpg',
   ];
 
-  const MOCK_RECORDS = [
-    { id: 1, usuario: "Lean", score: 9500 },
-    { id: 2, usuario: "Manu", score: 8900 },
-    { id: 3, usuario: "Mena", score: 8600 },
-  ];
-
   useOnInit(() => {
+    const cargarRecords = async () => {
+      try {
+        const data = await juegoService.obtenerRanking();
+        setRecords(data);
+      } catch (error) {
+        console.error("Error al cargar récords históricos:", error);
+      }
+    };
+
+    cargarRecords();
+
     const carga = setInterval(() => {
       const max = IMAGENES_FONDO.length;
       setBgIndex((prev) => (prev + 1) % max);
@@ -46,7 +52,6 @@ export const Menu = () => {
     setIsStarting(true);
     try {
       const nuevaPartida = await juegoService.iniciarPartida(currentUser.idUsuario);
-      
       const primeraRonda = await juegoService.generarNuevaRonda(nuevaPartida.idPartida);
 
       navigate(`/partida/${nuevaPartida.idPartida}`, {
@@ -89,10 +94,10 @@ export const Menu = () => {
           w="full"
         >
           <VStack spaceY={6} textAlign="center" px={4}>
-            <Heading size="4xl" color="gray.500" textShadow="0 4px 25px rgba(0,0,0,0.9)" letterSpacing="wider">
+            <Heading size="4xl" color="white" textShadow="0 4px 25px rgba(0,0,0,0.9)" letterSpacing="wider">
               BAIRES <Text as="span" color="teal.400">GUESSR</Text>
             </Heading>
-            <Text color="gray.500" fontSize="lg" maxW="md" textShadow="0 2px 10px rgba(0,0,0,0.8)">
+            <Text color="gray.200" fontSize="lg" maxW="md" textShadow="0 2px 10px rgba(0,0,0,0.8)">
               Explorá el campus y los espacios culturales. ¿Qué tan rápido podés adivinar la ubicación?
             </Text>
             <Button
@@ -134,24 +139,30 @@ export const Menu = () => {
         </Text>
 
         <HStack spaceX={4} overflowX="auto">
-          {MOCK_RECORDS.map((game) => (
-            <Box
-              key={game.id}
-              bg="gray.800"
-              px={3}
-              py={1}
-              borderRadius="md"
-              border="1px solid"
-              borderColor="gray.700"
-            >
-              <Text fontSize="sm" color="gray.200">
-                {game.usuario} — Partida #{game.id}:{" "}
-                <Text as="span" color="teal.400" fontWeight="bold">
-                  {game.score} pts
+          {records.length === 0 ? (
+            <Text fontSize="sm" color="gray.400">
+              Aún no hay partidas registradas
+            </Text>
+          ) : (
+            records.map((game) => (
+              <Box
+                key={game.idPartida}
+                bg="gray.800"
+                px={3}
+                py={1}
+                borderRadius="md"
+                border="1px solid"
+                borderColor="gray.700"
+              >
+                <Text fontSize="sm" color="gray.200">
+                  {game.username} — Partida #{game.idPartida}:{" "}
+                  <Text as="span" color="teal.400" fontWeight="bold">
+                    {game.puntajeTotal} pts
+                  </Text>
                 </Text>
-              </Text>
-            </Box>
-          ))}
+              </Box>
+            ))
+          )}
         </HStack>
       </Box>
     </Box>

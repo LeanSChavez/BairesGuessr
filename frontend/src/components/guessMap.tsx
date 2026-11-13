@@ -3,7 +3,6 @@ import { Box } from "@chakra-ui/react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Fix de íconos por defecto de Leaflet en Vite
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";

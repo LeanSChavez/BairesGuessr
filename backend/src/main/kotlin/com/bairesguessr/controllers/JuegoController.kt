@@ -28,6 +28,10 @@ class JuegoController(
     fun obtenerPartida(@PathVariable idPartida: Int): ResponseEntity<PartidaResponse> {
         return ResponseEntity.ok(juegoService.obtenerEstadoPartida(idPartida))
     }
+    @GetMapping("/usuario/{idUsuario}")
+    fun obtenerPartidasPorUsuario(@PathVariable idUsuario: Int): ResponseEntity<List<PartidaResponse>> {
+        return ResponseEntity.ok(juegoService.obtenerPartidasPorUsuario(idUsuario))
+    }
 
     @PostMapping("/{idPartida}/rondas/nueva")
     fun generarNuevaRonda(@PathVariable idPartida: Int): ResponseEntity<Any> {
