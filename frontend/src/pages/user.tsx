@@ -151,7 +151,7 @@ export const Profile = () => {
               flex={1}
               onClick={() => {
                 userService.logout()
-                navigate('/login')
+                navigate('/')
               }}
             >
               Cerrar Sesión
