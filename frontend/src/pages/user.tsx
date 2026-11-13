@@ -53,11 +53,7 @@ export const Profile = () => {
   }
 
   // Helper para determinar W / E / L según el puntaje obtenido (ajustable a tus reglas)
-  const obtenerBadgeResultado = (puntaje: number) => {
-    if (puntaje >= 9000) return <Badge colorPalette="green">W</Badge>
-    if (puntaje >= 5000) return <Badge colorPalette="yellow">E</Badge>
-    return <Badge colorPalette="red">L</Badge>
-  }
+ 
 
   return (
     <Center minH="100vh" bg="bg.subtle" px={4} py={8}>
@@ -113,7 +109,6 @@ export const Profile = () => {
             <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row bg="gray.800">
-                  <Table.ColumnHeader color="gray.300">Estado</Table.ColumnHeader>
                   <Table.ColumnHeader color="gray.300">Partida</Table.ColumnHeader>
                   <Table.ColumnHeader color="gray.300">Fecha</Table.ColumnHeader>
                   <Table.ColumnHeader color="gray.300">Puntaje</Table.ColumnHeader>
@@ -129,9 +124,6 @@ export const Profile = () => {
                 ) : (
                   historial.map((partida) => (
                     <Table.Row key={partida.idPartida} _hover={{ bg: "gray.800" }}>
-                      <Table.Cell>
-                        {obtenerBadgeResultado(partida.puntajeTotal)}
-                      </Table.Cell>
                       <Table.Cell color="gray.300">#{partida.idPartida}</Table.Cell>
                       <Table.Cell color="gray.400">{formatearFecha(partida.fechaInicio)}</Table.Cell>
                       <Table.Cell color="teal.300" fontWeight="bold">
